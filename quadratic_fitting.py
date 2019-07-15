@@ -53,9 +53,24 @@ def generate_random_data(dim=3, size=50):
         target += np.dot(state.T, np.dot(V_xx, state))
         target += V_0
         
-        targets.append(target + np.random.randn()*0.1)
+        targets.append(target)
 
     return (states, targets, V_0, V_x, V_xx)
+
+def generate_more_data(V_0, V_x, V_xx, dim=3):
+    states = np.random.randn(size, dim)
+
+    targets = []
+    for state in states:
+        state = state.reshape((dim, 1))
+
+        target = np.dot(V_x.T, state)
+        target += np.dot(state.T, np.dot(V_xx, state))
+        target += V_0
+        
+        targets.append(target)
+
+    return (states, targets)
 
 def get_accuracy(states, targets, V_0_hat, V_x_hat, V_xx_hat):
     total_error = 0.0
@@ -63,14 +78,14 @@ def get_accuracy(states, targets, V_0_hat, V_x_hat, V_xx_hat):
     for state, target in zip(states, targets):
         state = state.reshape((-1, 1))
 
-        estimate = np.dot(V_x.T, state)
-        estimate += np.dot(state.T, np.dot(V_xx, state))
-        estimate += V_0
+        estimate = np.dot(V_x_hat.T, state)
+        estimate += np.dot(state.T, np.dot(V_xx_hat, state))
+        estimate += V_0_hat
 
         total_error += (target - estimate) ** 2
 
-    total_error = total_error / float(len(targets))
-    return total_error
+    avg_error = total_error / float(len(targets))
+    return avg_error
 
 if __name__ == "__main__":
     for i in range(10):
@@ -80,7 +95,7 @@ if __name__ == "__main__":
         r_V_xx = np.random.randn(6, 6)
         states, targets, V_0, V_x, V_xx = generate_random_data(dim=6, size=100)
         acc = get_accuracy(states, targets, r_V_0, r_V_x, r_V_xx) 
-        print("Error of least squares estimate was {}".format(acc))
+        print("Error of random least squares estimate was {}".format(acc))
 
     for size in [1, 5, 10, 100, 500]:
         print("\n{} data points:".format(size))
@@ -89,7 +104,9 @@ if __name__ == "__main__":
         for _ in range(10):
             states, targets, V_0, V_x, V_xx = generate_random_data(dim=6, size=size)
             V_0_hat, V_x_hat, V_xx_hat = fit_quadratic_model(6, states, targets)
-            acc = get_accuracy(states, targets, V_0_hat, V_x_hat, V_xx_hat)
+            
+            more_states, more_targets = generate_more_data(V_0, V_x, V_xx, dim=6)
+            acc = get_accuracy(more_states, more_targets, V_0_hat, V_x_hat, V_xx_hat)
             total_acc += acc
 
         avg_acc = total_acc / 10.0
