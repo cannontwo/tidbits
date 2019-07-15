@@ -2,6 +2,12 @@ import numpy as np
 from sklearn.preprocessing import PolynomialFeatures
 
 def fit_quadratic_model(state_dim, states, targets):
+    """
+    Fit quadratic model using least squares. Here, we're using the normal
+    equations to solve for parameters arranged in a quadratic approximation of
+    the form est = V_0 + V_x * state + state.T * V_xx * state.
+    """
+
     V_0 = np.zeros((1, 1))
     V_x = np.zeros((state_dim, 1))
     V_xx = np.zeros((state_dim, state_dim))
@@ -70,9 +76,9 @@ if __name__ == "__main__":
     for i in range(10):
         print("Accuracy of random estimate:")
         r_V_0 = np.random.randn(1, 1)
-        r_V_x = np.random.randn(3, 1)
-        r_V_xx = np.random.randn(3, 3)
-        states, targets, V_0, V_x, V_xx = generate_random_data(dim=3, size=100)
+        r_V_x = np.random.randn(6, 1)
+        r_V_xx = np.random.randn(6, 6)
+        states, targets, V_0, V_x, V_xx = generate_random_data(dim=6, size=100)
         acc = get_accuracy(states, targets, r_V_0, r_V_x, r_V_xx) 
         print("Error of least squares estimate was {}".format(acc))
 
@@ -81,8 +87,8 @@ if __name__ == "__main__":
         total_acc = 0.0
 
         for _ in range(10):
-            states, targets, V_0, V_x, V_xx = generate_random_data(dim=3, size=size)
-            V_0_hat, V_x_hat, V_xx_hat = fit_quadratic_model(3, states, targets)
+            states, targets, V_0, V_x, V_xx = generate_random_data(dim=6, size=size)
+            V_0_hat, V_x_hat, V_xx_hat = fit_quadratic_model(6, states, targets)
             acc = get_accuracy(states, targets, V_0_hat, V_x_hat, V_xx_hat)
             total_acc += acc
 
