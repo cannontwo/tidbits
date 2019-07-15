@@ -142,7 +142,7 @@ if __name__ == "__main__":
         r_V_xx = np.random.randn(3, 3)
         states, targets, V_0, V_x, V_xx = generate_random_data(dim=3, size=100)
         acc = get_accuracy(states, targets, r_V_0, r_V_x, r_V_xx) 
-        print("Error of random least squares estimate was {}".format(acc))
+        print("Error of random estimate was {}".format(acc))
 
     for size in [1, 5, 10, 100, 500]:
         print("\n{} data points:".format(size))
