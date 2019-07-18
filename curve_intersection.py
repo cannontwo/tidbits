@@ -95,6 +95,13 @@ def compute_full_integral(x1, y1, x2, y2, intersections, limit_low, limit_high):
 
     return total
 
+def compute_curve_diff(x1, y1, x2, y2):
+    limit_low = min(x1, x2)
+    limit_high = max(x1, x2)
+    intersections = get_intersections(x1, y1, x2, y2, limit_low, limit_high, 0)
+    diff = compute_full_integral(x1, y1, x2, y2, intersections, limit_low, limit_high)
+    return diff
+
 if __name__ == "__main__":
     for i in range(10):
         x1, y1, x2, y2 = np.random.uniform(-2, 2, size=4)
@@ -106,14 +113,9 @@ if __name__ == "__main__":
         print("x1, y1 are {}, {}".format(x1, y1))
         print("x2, y2 are {}, {}".format(x2, y2))
         start = time.time()
-        intersections = get_intersections(x1, y1, x2, y2, limit_low, limit_high, 0)
-        print("Intersections points are {}".format(sorted(intersections)))
+        diff = compute_curve_diff(x1, y1, x2, y2)
         end = time.time()
-        print("Took {} seconds to compute intersections".format(end - start))
-
-        start = time.time()
-        print("Integral is {}".format(compute_full_integral(x1, y1, x2, y2, intersections, limit_low, limit_high)))
-        end = time.time()
+        print("Curve diff was {}".format(diff))
         print("Took {} seconds to compute integral\n".format(end - start))
         
         X = np.linspace(-2, 2, 100)
