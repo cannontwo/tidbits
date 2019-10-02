@@ -11,7 +11,7 @@ def get_intersections(x1, y1, x2, y2, limit_low, limit_high, depth, epsilon=0.01
     """
     intersections = []
 
-    if depth > 9:
+    if depth > 3:
         return []
 
     def _func(x):

@@ -119,13 +119,16 @@ def get_mats_from_sk(model, dim=3):
     powers = list(chain.from_iterable(combinations_with_replacement(range(dim), i) for i in range(3)))
     coefs = model.coef_
 
+    print(coefs)
+    print(model.intercept_)
+
     V_0 = np.zeros((1, 1))
     V_x = np.zeros((dim, 1))
     V_xx = np.zeros((dim, dim))
 
     for idx, power in enumerate(powers):
         if len(power) == 0:
-            V_0 = coefs[idx]
+            V_0 = model.intercept_
         elif len(power) == 1:
             V_x[power] += coefs[idx]
         elif len(power) == 2:
